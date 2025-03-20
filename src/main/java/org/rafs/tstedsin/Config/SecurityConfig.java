@@ -42,8 +42,16 @@ public class SecurityConfig {
                 .sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests( authorize -> authorize
-                        .requestMatchers(HttpMethod.POST, "api/users").permitAll()
+                        .requestMatchers(HttpMethod.POST, "api/client").permitAll()
                         .requestMatchers(HttpMethod.POST,"api/login").permitAll()
+                        .requestMatchers(HttpMethod.GET,"api/appointment").hasRole("CLIENT")
+                        .requestMatchers(HttpMethod.POST,"api/appointment").hasRole("CLIENT")
+                        .requestMatchers(HttpMethod.PUT,"api/appointment").hasRole("CLIENT")
+                        .requestMatchers(HttpMethod.GET,"api/appointment/all").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT,"api/appointment/confirm").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT,"api/appointment/full-update").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET,"api/beauty-services").hasRole("CLIENT")
+
                         .anyRequest().hasRole("CLIENT")
                 )
                 .cors(cors -> {})

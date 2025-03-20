@@ -46,10 +46,15 @@ public class LoginService {
                     .map(GrantedAuthority::getAuthority)
                     .orElse("ROLE_USER");
 
+            User user = (User)auth.getPrincipal();
+
             return new LoginResponseDTO(
                     token,
                     LocalDateTime.now().plus(expirationInMillisecond, ChronoUnit.MILLIS),
-                    Role.valueOf(roleStr)
+                    Role.valueOf(roleStr),
+                    user.getId(),
+                    user.getName(),
+                    user.getUsername()
             );
 
         }catch (Exception exception){

@@ -1,16 +1,15 @@
 package org.rafs.tstedsin.Model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.rafs.tstedsin.Enum.AppointmentStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
 @Entity
 public class Appointment {
 
@@ -22,7 +21,7 @@ public class Appointment {
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "appointment_service",
             joinColumns = @JoinColumn(name = "appointment_id"),
@@ -30,18 +29,26 @@ public class Appointment {
     )
     private List<BeautyService> beautyServices;
 
+
     private LocalDateTime dateTime;
 
     @Enumerated(EnumType.STRING)
     private AppointmentStatus status;
 
-    @OneToMany(mappedBy = "appointment", cascade = CascadeType.ALL)
-    private List<AppointmentHistory> history;
+    public Appointment() {
+        this.status = AppointmentStatus.PENDENTE;
+    }
 
-    public Appointment(Client client, List<BeautyService> beautyServices, LocalDateTime dateTime, AppointmentStatus status) {
+    public Appointment(Client client, List<BeautyService> beautyServices, LocalDateTime dateTime) {
         this.client = client;
         this.beautyServices = beautyServices;
         this.dateTime = dateTime;
-        this.status = status;
+        this.status = AppointmentStatus.PENDENTE;
     }
+
+
+
+
+
+
 }

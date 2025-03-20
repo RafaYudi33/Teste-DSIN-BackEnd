@@ -4,5 +4,11 @@ import org.rafs.tstedsin.Enum.Role;
 
 import java.time.LocalDateTime;
 
-public record LoginResponseDTO(String token, LocalDateTime expirationTime, Role role) {
+public record LoginResponseDTO(String token,
+                               LocalDateTime expirationTime,
+                               Role role,
+                               Long idUser,
+                               String name,
+                               String username
+) {
 }

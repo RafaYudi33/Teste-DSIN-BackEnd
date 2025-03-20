@@ -5,6 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.rafs.tstedsin.Repository.AdminRepository;
+import org.rafs.tstedsin.Repository.ClientRepository;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,11 +17,13 @@ import java.io.IOException;
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
 
-    private final AdminRepository repository;
+    private final AdminRepository adminRepository;
+    private final ClientRepository clientRepository;
     private final TokenService tokenService;
 
-    public SecurityFilter(AdminRepository repository, TokenService tokenService) {
-        this.repository = repository;
+    public SecurityFilter(AdminRepository adminRepository, ClientRepository clientRepository, TokenService tokenService) {
+        this.adminRepository = adminRepository;
+        this.clientRepository = clientRepository;
         this.tokenService = tokenService;
     }
 
@@ -29,8 +32,12 @@ public class SecurityFilter extends OncePerRequestFilter {
         var token = this.recoverToken(request);
 
         if (token!= null){
-            var username = this.tokenService.validateToken(token);
-            UserDetails user = this.repository.findByUsername(username);
+            var username = tokenService.validateToken(token);
+            UserDetails user = adminRepository.findByUsername(username);
+            if(user == null){
+               user = clientRepository.findByUsername(username);
+            }
+
             var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }

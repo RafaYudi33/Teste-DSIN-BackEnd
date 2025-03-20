@@ -16,3 +16,6 @@ security:
   jwt:
     secretKey: sua-secret-key (pode ser qualquer String)
     expirationInMillisecond: 1800000
+
+cors:
+  originPatterns: "http://dominio-front-end"

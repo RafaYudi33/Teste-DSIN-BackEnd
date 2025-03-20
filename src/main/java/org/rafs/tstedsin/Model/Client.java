@@ -1,5 +1,6 @@
 package org.rafs.tstedsin.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
@@ -18,6 +19,7 @@ import java.util.List;
 public class Client extends User{
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Appointment> appointments;
 
     public Client(String password, String name, List<Appointment> appointments) {
