@@ -1,4 +1,4 @@
-<h1 align="center">Backend Teste DSIN</h1>
+<h1 align="center">Backend do Teste da DSIN</h1>
 
 <br>
 <p align="center">
@@ -11,7 +11,7 @@
 <br>
 
 <p align="center">
-  <b>Uma API REST para gerenciamento agendamentos da Leilaleila.</b>
+  <b>Uma API REST para gerenciamento de agendamentos da Leilaleila.</b>
 </p>
 
 <h2 id="tecnologias">🛠 Tecnologias</h2>
@@ -333,7 +333,7 @@ Para documentar a requisição GET que você mencionou, onde a consulta não pos
 
 ---
 
-**GET /api/appointment?id=2** - Consultar agendamentos por ID
+**GET /api/appointment** - Consultar agendamentos por ID
 
 **Requer Autenticação**: Bearer Token
 
@@ -341,7 +341,7 @@ Para documentar a requisição GET que você mencionou, onde a consulta não pos
 
 **URL Completa de Exemplo**:
 ```
-http://localhost:8080/api/appointment
+http://localhost:8080/api/appointment?id=2
 ```
 
 **Exemplo de Sucesso**
@@ -407,8 +407,93 @@ http://localhost:8080/api/appointment
 ```
 **Código de Status**: 200 OK
 
+---
 
+**GET /api/beauty-services** - Listar todos os serviços de beleza disponíveis
 
+**Requer Autenticação**: Bearer Token
+
+**Exemplo de Sucesso**
+```json
+[
+    {
+        "id": 1,
+        "name": "Corte de Cabelo",
+        "description": "Corte profissional para todos os estilos",
+        "price": 50.00,
+        "durationMinutes": 45
+    },
+    {
+        "id": 2,
+        "name": "Escova e Finalização",
+        "description": "Escova modelada para todos os tipos de cabelo",
+        "price": 40.00,
+        "durationMinutes": 30
+    },
+    {
+        "id": 3,
+        "name": "Coloração",
+        "description": "Coloração capilar com tintas de alta qualidade",
+        "price": 120.00,
+        "durationMinutes": 90
+    },
+    {
+        "id": 4,
+        "name": "Manicure e Pedicure",
+        "description": "Cuidado completo para unhas das mãos e pés",
+        "price": 70.00,
+        "durationMinutes": 60
+    },
+    {
+        "id": 5,
+        "name": "Hidratação Capilar",
+        "description": "Tratamento profundo para cabelos ressecados",
+        "price": 60.00,
+        "durationMinutes": 40
+    }
+]
+```
+**Código de Status**: 200 OK
+
+---
 ### Endpoints Administrativos (Acesso restrito a Administradores)
 **Requer Role**: ADMIN
 
+**PUT /api/appointment/full-update** - Atualização completa de um agendamento
+
+**Requer Autenticação**: Bearer Token
+
+**Exemplo de Payload - Sucesso**
+```json
+{
+  "id": 30,
+  "beautyServicesIds": [1, 2, 3],
+  "dateTime": "2024-04-19T14:30:00",
+  "status": "CONFIRMADO"
+}
+```
+**Código de Status**: 200 OK 
+
+**Exemplos de Erro**
+```json
+{
+    "message": "Validation error",
+    "timestamp": "2025-03-20T22:07:21.4506934",
+    "details": "uri=/api/appointment/full-update",
+    "errors": {
+        "dateTime": "Não é permitido datas passadas"
+    }
+}
+```
+**Código de Status**: 400 Bad Request
+
+```json
+{
+    "message": "Agendamento não encontrado",
+    "timestamp": "2025-03-20T22:05:41.1065145",
+    "details": "uri=/api/appointment/full-update"
+}
+```
+**Código de Status**: 400 Bad Request
+
+---
