@@ -2,10 +2,8 @@ package org.rafs.tstedsin.DTOs.Login;
 
 import org.rafs.tstedsin.Enum.Role;
 
-import java.time.LocalDateTime;
-
 public record LoginResponseDTO(String token,
-                               LocalDateTime expirationTime,
+                               long expirationTime,
                                Role role,
                                Long idUser,
                                String name,

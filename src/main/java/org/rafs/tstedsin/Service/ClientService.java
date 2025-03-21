@@ -4,6 +4,7 @@ import org.rafs.tstedsin.DTOs.Login.LoginRequestDTO;
 import org.rafs.tstedsin.DTOs.Login.LoginResponseDTO;
 import org.rafs.tstedsin.Enum.Role;
 import org.rafs.tstedsin.Model.User;
+import org.rafs.tstedsin.Repository.AdminRepository;
 import org.springframework.security.core.GrantedAuthority;
 
 import org.rafs.tstedsin.Errors.UnauthorizedException;
@@ -26,17 +27,19 @@ import java.util.Arrays;
 public class ClientService {
 
     private final ClientRepository clientRepository;
+    private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public ClientService(ClientRepository clientRepository, PasswordEncoder passwordEncoder) {
+    public ClientService(ClientRepository clientRepository, AdminRepository adminRepository, PasswordEncoder passwordEncoder) {
         this.clientRepository = clientRepository;
+        this.adminRepository = adminRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
 
     public Client createUserClient(Client user) {
 
-        if(clientRepository.findByUsername(user.getUsername()) != null) {
+        if(clientRepository.findByUsername(user.getUsername()) != null || adminRepository.findByUsername(user.getUsername()) != null) {
             throw new UserAlreadyExistsException();
         }
         System.out.println(user.getRole());

@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
             errors.put(error.getField(), error.getDefaultMessage());
         }
 
-        return new CustomResponseError("Validation error", LocalDateTime.now(), request.getDescription(false), errors);
+        return new CustomResponseErrors(errors,"Validation error", LocalDateTime.now(), request.getDescription(false));
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -53,6 +53,13 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(UnauthorizedException.class)
     public final CustomResponseError handleUnauthorizedException(UnauthorizedException e, WebRequest request){
+        return new CustomResponseError(e.getMessage(), LocalDateTime.now(), request.getDescription(false));
+
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(AppointmentIsNotFromThisClientException.class)
+    public final CustomResponseError handleAppointmentIsNotFromThisClientException(AppointmentIsNotFromThisClientException e, WebRequest request){
         return new CustomResponseError(e.getMessage(), LocalDateTime.now(), request.getDescription(false));
 
     }

@@ -46,9 +46,4 @@ public class Appointment {
         this.status = AppointmentStatus.PENDENTE;
     }
 
-
-
-
-
-
 }

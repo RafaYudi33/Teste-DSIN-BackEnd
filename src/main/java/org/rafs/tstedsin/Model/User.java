@@ -1,6 +1,8 @@
 package org.rafs.tstedsin.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.rafs.tstedsin.Enum.Role;
 import jakarta.validation.constraints.NotNull;
@@ -23,12 +25,15 @@ public class User implements UserDetails {
     private Long id;
 
     @NotNull
+    @NotBlank
     private String name;
 
     @NotNull
+    @NotBlank
     private String password;
 
     @NotNull
+    @NotBlank
     private String username;
 
 
@@ -45,6 +50,7 @@ public class User implements UserDetails {
         this.role = Role.ROLE_CLIENT;
     }
 
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if(this.role == Role.ROLE_ADMIN) return List.of(
@@ -53,21 +59,25 @@ public class User implements UserDetails {
         else return List.of(new SimpleGrantedAuthority("ROLE_CLIENT"));
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isEnabled() {
         return true;

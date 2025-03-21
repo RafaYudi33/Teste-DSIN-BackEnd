@@ -13,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -50,7 +51,9 @@ public class LoginService {
 
             return new LoginResponseDTO(
                     token,
-                    LocalDateTime.now().plus(expirationInMillisecond, ChronoUnit.MILLIS),
+                    Instant.now()
+                            .plusMillis(expirationInMillisecond)
+                            .getEpochSecond(),
                     Role.valueOf(roleStr),
                     user.getId(),
                     user.getName(),

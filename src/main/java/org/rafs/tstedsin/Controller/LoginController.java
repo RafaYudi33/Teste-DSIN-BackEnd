@@ -1,5 +1,6 @@
 package org.rafs.tstedsin.Controller;
 
+import jakarta.validation.Valid;
 import org.rafs.tstedsin.DTOs.Login.LoginRequestDTO;
 import org.rafs.tstedsin.DTOs.Login.LoginResponseDTO;
 import org.rafs.tstedsin.Service.LoginService;
@@ -21,7 +22,7 @@ public class LoginController {
     }
 
     @PostMapping
-    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequest) {
+    public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO loginRequest) {
         return ResponseEntity.status(HttpStatus.OK).body(loginService.login(loginRequest));
     }
 }
