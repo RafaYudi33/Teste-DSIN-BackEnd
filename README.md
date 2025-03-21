@@ -1,4 +1,4 @@
-<h1 align="center">API de Gerenciamento de Tarefas 💻</h1>
+<h1 align="center">Backend Teste DSIN</h1>
 
 <br>
 <p align="center">
@@ -11,7 +11,7 @@
 <br>
 
 <p align="center">
-  <b>Uma API REST para gerenciamento de tarefas pessoais.</b>
+  <b>Uma API REST para gerenciamento agendamentos da Leilaleila.</b>
 </p>
 
 <h2 id="tecnologias">🛠 Tecnologias</h2>
