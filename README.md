@@ -6,7 +6,8 @@
  <a href="#tecnologias">Tecnologias</a> •
  <a href="#banco-de-dados">Banco de Dados</a> • 
  <a href="#inicializacao">Como Rodar</a> • 
- <a href="#endpoints">Endpoints</a>
+ <a href="#endpoints">Endpoints •</a>
+ <a href="#testes">Testes Unitários •</a>
 </p>
 
 <br>
@@ -630,4 +631,184 @@ http://localhost:8080/api/appointment/confirm?id=2
 ```
 200 OK
 
+<h2 id="Testes">✅ Testes Unitários</h2>
 
+Os testes unitários foram realizados principalmente na camada de serviço, foco das regras de negócio mais complexas do sistema. Optei por concentrar os esforços de teste na classe `AppointmentService`, que apresenta a maior complexidade e densidade de lógica de negócio. Dada a limitação de tempo, os testes foram direcionados às funcionalidades críticas desta classe. Para detalhes adicionais sobre os testes implementados, os mesmos podem ser consultados no diretório `src/test/orgs/rafs/tstedsin/unnitests/service`.
+
+### Configuração Inicial para os Testes
+
+A estrutura de testes foi configurada utilizando mocks para os repositórios e mapeadores necessários, além de injeção de dependências na classe de serviço testada. Segue um exemplo da configuração básica utilizada:
+
+```java
+@Mock
+private AppointmentRepository appointmentRepository;
+@Mock
+private ClientRepository clientRepository;
+@Mock
+private BeautyServiceRepository beautyServiceRepository;
+@Mock
+private AppointmentMapper appointmentMapper;
+
+@InjectMocks
+private AppointmentService appointmentService;
+
+private Client client;
+private BeautyService beautyService;
+private Appointment appointment;
+private CreateAppointmentRequestDTO createAppointmentRequestDto;
+private AdmUpdateAppointmentRequestDTO admUpdateAppointmentRequestDTO;
+private UpdateAppointmentRequestDTO updateAppointmentRequestDTO;
+
+@BeforeEach
+public void setUp() {
+    client = new Client();
+    beautyService = new BeautyService();
+    appointment = new Appointment();
+    LocalDateTime futureDateTime = LocalDateTime.now().plusDays(1);
+    createAppointmentRequestDto = new CreateAppointmentRequestDTO(1L, List.of(1L), futureDateTime);
+    updateAppointmentRequestDTO = new UpdateAppointmentRequestDTO(1L, List.of(1L), futureDateTime, 1L);
+    admUpdateAppointmentRequestDTO = new AdmUpdateAppointmentRequestDTO(1L, List.of(1L), futureDateTime, AppointmentStatus.CANCELADO);
+}
+```
+
+### Testes Implementados
+
+1. **Criação de Agendamento (Sucesso)**:
+   - **Descrição**: Testa a criação de um agendamento com sucesso.
+   - **Assertiva**: Verifica se o agendamento é criado e persistido corretamente.
+   - **Mock Verificações**: Garante que os métodos dos repositórios e mapeadores são chamados conforme esperado.
+
+   ```java
+   @Test
+   public void testCreateAppointmentSuccess() {
+       when(clientRepository.findById(anyLong())).thenReturn(Optional.of(client));
+       when(appointmentMapper.toModel(any(), any(), any(), any())).thenReturn(appointment);
+       when(appointmentRepository.save(any(Appointment.class))).thenReturn(appointment);
+
+       Appointment createdAppointment = appointmentService.createAppointment(createAppointmentRequestDto);
+
+       assertNotNull(createdAppointment);
+       verify(clientRepository).findById(createAppointmentRequestDto.clientId());
+       verify(beautyServiceRepository).findAllById(createAppointmentRequestDto.beautyServicesIds());
+       verify(appointmentRepository).save(appointment);
+   }
+   ```
+
+2. **Criação de Agendamento com Cliente Inexistente**:
+   - **Descrição**: Verifica a robustez do sistema ao tentar criar um agendamento para um cliente não existente.
+   - **Assertiva**: Espera-se que o sistema lance uma exceção indicando que o cliente não foi encontrado.
+
+   ```java
+   @Test
+   public void testCreateAppointmentWithNonExistentClient() {
+       when(clientRepository.findById(createAppointmentRequestDto.clientId())).thenReturn(Optional.empty());
+
+       assertThrows(ClientNotFoundException.class, () -> {
+           appointmentService.createAppointment(createAppointmentRequestDto);
+       });
+   }
+   ```
+
+3. **Atualização de Agendamento pelo Administrador (Sucesso)**:
+   - **Descrição**: Testa a funcionalidade de atualização de um agendamento pelo administrador, incluindo a capacidade de alterar o status do agendamento.
+   - **Validações**: Confirma que os dados necessários são buscados e atualizados corretamente.
+
+   ```java
+   @Test
+   public void testAdmUpdateAppointmentSuccess() {
+       when(appointmentRepository.findById(anyLong())).thenReturn(Optional.of(appointment));
+       when(beautyServiceRepository.findAllById(anyList())).thenReturn(List.of(beautyService));
+       when(appointmentRepository.save(any(Appointment.class))).thenReturn(appointment);
+
+       appointmentService.admUpdateAppointment(admUpdateAppointmentRequestDTO);
+
+       verify(appointmentRepository).findById(1L);
+       verify(beautyServiceRepository).findAllById(List.of(1L));
+       verify(appointmentRepository).save(appointment);
+   }
+   ```
+
+   4. **Atualização de Agendamento**: 
+   - **Descrição**: Testa a funcionalidade de atualizar um agendamento existente, garantindo que todas as informações sejam atualizadas corretamente no banco de dados.
+   - **Assertiva**: Confirma que o repositório é chamado para buscar, atualizar e salvar o agendamento com os novos dados.
+
+   ```java
+   @Test
+   public void testUpdateAppointment() {
+       Client client = new Client();
+       client.setId(1L);
+       Appointment appointmentToUpdate = new Appointment(client, List.of(beautyService), LocalDateTime.now().plusDays(3L));
+
+       when(appointmentRepository.findById(anyLong())).thenReturn(Optional.of(appointmentToUpdate));
+       when(beautyServiceRepository.findAllById(anyList())).thenReturn(List.of(beautyService));
+       when(appointmentRepository.save(any(Appointment.class))).thenReturn(appointmentToUpdate);
+
+       appointmentService.updateAppointment(updateAppointmentRequestDTO);
+
+       verify(appointmentRepository).findById(1L);
+       verify(beautyServiceRepository).findAllById(List.of(1L));
+       verify(appointmentRepository).save(appointmentToUpdate);
+   }
+   ```
+
+5. **Buscar Todos os Agendamentos por ID do Cliente**: 
+   - **Descrição**: Verifica a capacidade do serviço de retornar todos os agendamentos associados a um cliente específico.
+   - **Assertiva**: Confirma que a lista de agendamentos retornada é a esperada e que o repositório foi chamado corretamente.
+
+   ```java
+   @Test
+   public void testFindAllByClientIdSuccess() {
+       Long clientId = 1L;
+       List<Appointment> expectedAppointments = List.of(new Appointment(), new Appointment());
+
+       when(appointmentRepository.findAllByClientId(clientId)).thenReturn(expectedAppointments);
+       List<Appointment> actualAppointments = appointmentService.findAllByClientId(clientId);
+
+       assertNotNull(actualAppointments);
+       assertEquals(expectedAppointments, actualAppointments);
+       verify(appointmentRepository).findAllByClientId(clientId);
+   }
+   ```
+
+6. **Confirmação de Agendamento**: 
+   - **Descrição**: Testa a funcionalidade de confirmar um agendamento, alterando o status do mesmo para confirmado.
+   - **Assertiva**: Verifica se o status do agendamento é atualizado para confirmado e se o repositório é chamado para salvar a alteração.
+
+   ```java
+   @Test
+   public void testConfirmAppointmentSuccess() {
+       Long appointmentId = 1L;
+       when(appointmentRepository.findById(appointmentId)).thenReturn(Optional.of(appointment));
+       when(appointmentRepository.save(any(Appointment.class))).thenReturn(appointment);
+
+       appointmentService.confirmAppointment(1L);
+
+       assertEquals(AppointmentStatus.CONFIRMADO, appointment.getStatus());
+       verify(appointmentRepository).save(appointment);
+   }
+
+   @Test
+   public void testConfirmAppointmentWithNonExistentAppointment() {
+       when(appointmentRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+       assertThrows(AppointmentNotFoundException.class, () -> {
+           appointmentService.confirmAppointment(1L);
+       });
+   }
+   ```
+
+7. **Buscar Todos os Agendamentos**: 
+   - **Descrição**: Verifica a capacidade do serviço de listar todos os agendamentos existentes no sistema.
+   - **Assertiva**: Confirma que a lista de agendamentos é retornada corretamente e que todos os agendamentos são recuperados do repositório.
+
+   ```java
+   @Test
+   public void testFindAllAppointmentsSuccess() {
+       List<Appointment> expectedAppointments = List.of(new Appointment(), new Appointment());
+       when(appointmentRepository.findAll()).thenReturn(expectedAppointments);
+
+       List<Appointment> result = appointmentService.findAll();
+       assertNotNull(result);
+       verify(appointmentRepository).findAll();
+   }
+   ```
