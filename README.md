@@ -54,6 +54,10 @@ As migrações do Flyway são aplicadas automaticamente ao iniciar a aplicação
 
 Para mais detalhes sobre cada script de migração, acesse a pasta `src/resources/db/migration` no projeto.
 
+Para testar as rotas de admin, com o usuário que foi criado na migration, basta usar essas informações:
+<p>username: Leilaleila</p>
+<p>password: adminLeila**</p>
+
 <h2 id="tecnologias">🛠 Tecnologias</h2>
 
 - Java
@@ -106,6 +110,8 @@ logging:
 cors:
   originPatterns: "http://localhost:8000" #altere para o domínio do front end (Por padrão o front ja sobe na 8000, se precisar trocar, tem que modificar aqui também)
 ```
+
+
 
 ### Iniciando
 
