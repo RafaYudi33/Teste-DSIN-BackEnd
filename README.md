@@ -87,9 +87,9 @@ Para configurar o banco de dados, você só precisa criar o banco de dados e rod
 Antes de iniciar a aplicação, crie o banco de dados com o seguinte comando SQL:
 
 ```sql
-CREATE DATABASE teste-dsin;
+CREATE DATABASE `teste-dsin`;
 ```
-
+OBS: Não esqueça do `` envolvendo o nome, use exatamente o exemplo acima, o mysql por padrão não aceita come com "-".
 ### Migrações do Flyway
 
 As migrações do Flyway são aplicadas automaticamente ao iniciar a aplicação. Aqui estão as descrições das migrações disponíveis:
@@ -104,9 +104,11 @@ Para mais detalhes sobre cada script de migração, acesse a pasta `src/resource
 
 <h2 id="endpoints">📍 Endpoints</h2>
 
-### Endpoints de Usuário
+### Endpoints de Cliente
 
-**POST /api/client** - Cadastrar um novo usuário
+*Todos os endpoints que precisam de token estão sujeitos ao retorno 403(forbidden), caso o token seja inválido/expirado. Ou se até mesmo o token pertencer a  uma role que não tem permissão ao endpoint.*
+
+**POST /api/client** - Cadastrar um novo cliente
 
 **Exemplo de Payload - Sucesso**
 ```json
@@ -332,11 +334,11 @@ Para mais detalhes sobre cada script de migração, acesse a pasta `src/resource
 
 ---
 
-**GET /api/appointment** - Consultar agendamentos por ID
+**GET /api/appointment** - Consultar agendamentos por ID do cliente
 
 **Requer Autenticação**: Bearer Token
 
-**Parâmetro de Caminho**: `id` - O identificador do agendamento a ser consultado.
+**Parâmetro de Caminho**: `id` - O identificador do cliente, para buscar todos os seus agendamentos.
 
 **URL Completa de Exemplo**:
 ```
@@ -404,7 +406,7 @@ http://localhost:8080/api/appointment?id=2
     },
 ]
 ```
-**Código de Status**: 200 OK
+200 OK
 
 ---
 
@@ -452,7 +454,7 @@ http://localhost:8080/api/appointment?id=2
     }
 ]
 ```
-**Código de Status**: 200 OK
+200 OK
 
 ---
 ### Endpoints Administrativos (Acesso restrito a Administradores)
@@ -471,7 +473,7 @@ http://localhost:8080/api/appointment?id=2
   "status": "CONFIRMADO"
 }
 ```
-**Código de Status**: 200 OK 
+200 OK 
 
 **Exemplos de Erro**
 ```json
@@ -484,7 +486,7 @@ http://localhost:8080/api/appointment?id=2
     }
 }
 ```
-**Código de Status**: 400 Bad Request
+400 Bad Request
 
 ```json
 {
@@ -493,6 +495,121 @@ http://localhost:8080/api/appointment?id=2
     "details": "uri=/api/appointment/full-update"
 }
 ```
-**Código de Status**: 400 Bad Request
+400 Bad Request
 
 ---
+
+**PUT /api/appointment/confirm** - Confirmar um agendamento
+
+**Requer Autenticação**: Bearer Token
+
+**Parâmetro de Caminho**: `id` - O identificador do agendamento a ser confirmado.
+
+**URL Completa de Exemplo**:
+```
+http://localhost:8080/api/appointment/confirm?id=2
+```
+
+**Exemplo de Sucesso**
+200 OK
+
+**Exemplo de Erro** 
+
+```json
+{
+    "message": "Agendamento não encontrado",
+    "timestamp": "2025-03-21T08:29:56.063445",
+    "details": "uri=/api/appointment/confirm"
+}
+```
+400 Bad Request
+
+---
+
+**GET /api/appointment/all** - Listar todos os agendamentos, de todos os clientes.
+
+**Requer Autenticação**: Bearer Token
+
+**Exemplo de Sucesso**
+```json
+[
+    {
+        "id": 6,
+        "client": {
+            "id": 2,
+            "name": "Cliente Teste",
+            "username": "clientetest",
+            "role": "ROLE_CLIENT"
+        },
+        "beautyServices": [
+            {
+                "id": 1,
+                "name": "Corte de Cabelo",
+                "description": "Corte profissional para todos os estilos",
+                "price": 50.00,
+                "durationMinutes": 45
+            },
+            {
+                "id": 3,
+                "name": "Coloração",
+                "description": "Coloração capilar com tintas de alta qualidade",
+                "price": 120.00,
+                "durationMinutes": 90
+            }
+        ],
+        "dateTime": "2025-03-19T14:36:43",
+        "status": "CONFIRMADO"
+    },
+    {
+        "id": 7,
+        "client": {
+            "id": 4,
+            "name": "Rafael",
+            "username": "rafay",
+            "role": "ROLE_CLIENT"
+        },
+        "beautyServices": [
+            {
+                "id": 2,
+                "name": "Escova e Finalização",
+                "description": "Escova modelada para todos os tipos de cabelo",
+                "price": 40.00,
+                "durationMinutes": 30
+            },
+            {
+                "id": 5,
+                "name": "Hidratação Capilar",
+                "description": "Tratamento profundo para cabelos ressecados",
+                "price": 60.00,
+                "durationMinutes": 40
+            }
+        ],
+        "dateTime": "2025-03-18T14:36:43",
+        "status": "CONFIRMADO"
+    }
+]
+```
+200 OK
+
+---
+
+**GET /api/reports/last-week** - Relatório de desempenho da última semana
+
+**Requer Autenticação**: Bearer Token
+
+**Observação**: Este relatório apresenta métricas dos últimos 7 dias, contabilizando apenas os agendamentos que ficaram como confirmados, ou seja, agendamentos que estão no passado e com o status confirmado, são considerados concluidos pelo sistema no cálculo das métricas.
+
+**Exemplo de Sucesso**
+
+```json
+{
+    "Faturamento total": 460.00,
+    "Média de faturamento diário": 65.71,
+    "Total de agendamentos concluídos": 3,
+    "Serviço mais lucrativo": "Coloração",
+    "Duração média dos agendamentos (min)": 118
+}
+```
+200 OK
+
+
