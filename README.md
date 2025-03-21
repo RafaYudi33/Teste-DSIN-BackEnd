@@ -728,7 +728,7 @@ public void setUp() {
    }
    ```
 
-   4. **Atualização de Agendamento**: 
+4. **Atualização de Agendamento**: 
    - **Descrição**: Testa a funcionalidade de atualizar um agendamento existente, garantindo que todas as informações sejam atualizadas corretamente no banco de dados.
    - **Assertiva**: Confirma que o repositório é chamado para buscar, atualizar e salvar o agendamento com os novos dados.
 
@@ -772,7 +772,7 @@ public void setUp() {
 
 6. **Confirmação de Agendamento**: 
    - **Descrição**: Testa a funcionalidade de confirmar um agendamento, alterando o status do mesmo para confirmado.
-   - **Assertiva**: Verifica se o status do agendamento é atualizado para confirmado e se o repositório é chamado para salvar a alteração.
+   - **Assertiva**: Verifica se o status do agendamento é atualizado para confirmado e se o repositório é chamado para salvar a alteração. E o teste abaixo verifica o lançamento da exceção quando o agendamento não existe.
 
    ```java
    @Test
