@@ -329,7 +329,6 @@ Para mais detalhes sobre cada script de migração, acesse a pasta `src/resource
 ```
 400 Bad Request
 
-Para documentar a requisição GET que você mencionou, onde a consulta não possui corpo mas um parâmetro de caminho, aqui está como você pode formatar essa documentação, incluindo o exemplo de sucesso e o código de status:
 
 ---
 
