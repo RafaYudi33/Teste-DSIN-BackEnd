@@ -109,8 +109,6 @@ cors:
 
 ### Iniciando
 
-Antes de iniciar de fato, confiram a seçao abaixo para garantir que o banco já tenha sido criado.
-
 ```bash
 cd /caminho/para/seu/projeto
 mvn spring-boot:run
