@@ -2,9 +2,10 @@
 
 <br>
 <p align="center">
+ <a href="#arquitetura">Arquitetura</a> • 
  <a href="#tecnologias">Tecnologias</a> •
- <a href="#inicializacao">Como Rodar</a> • 
  <a href="#banco-de-dados">Banco de Dados</a> • 
+ <a href="#inicializacao">Como Rodar</a> • 
  <a href="#endpoints">Endpoints</a>
 </p>
 
@@ -13,6 +14,45 @@
 <p align="center">
   <b>Uma API REST para gerenciamento de agendamentos da Leilaleila.</b>
 </p>
+
+
+<h2 id="arquitetura">🏛 Arquitetura</h2>
+
+Este projeto foi desenvolvido utilizando o framework Spring, que segue o padrão de arquitetura MVC (Model-View-Controller). Essa abordagem divide a aplicação em três camadas interconectadas, o que facilita a manutenção e a escalabilidade:
+
+- **Model**: Representa a camada de dados e a lógica de negócios. Inclui classes de entidades que mapeiam para tabelas de banco de dados e classes de serviço que contêm a lógica de negócios.
+- **View**: No contexto de uma API REST, essa camada é representada pelos formatos de resposta que são enviados ao cliente. Embora não haja uma "view" no sentido tradicional, o design dos endpoints e a estrutura dos dados retornados cumprem esse papel.
+- **Controller**: Camada que lida com a recepção de todas as requisições HTTP, delegando a lógica de negócios para os serviços apropriados e retornando as respostas ao cliente.
+
+Adicionalmente, o projeto utiliza as seguintes camadas:
+  
+- **DTOs (Data Transfer Objects)**: Objetos que facilitam o transporte de dados entre subcamadas do sistema, especialmente úteis para transferir dados entre a camada de serviço e a camada de controller.
+- **Repository**: Camada que abstrai o acesso aos dados, permitindo que o restante da aplicação interaja com o banco de dados de forma mais simples e direta.
+- **Security**: Configurações de segurança do Spring Security para autenticação e autorização dentro da aplicação.
+- **Service**: Camada intermediária entre os controllers e os repositórios, onde a lógica de negócios é implementada, garantindo que os controllers permaneçam enxutos e focados apenas no roteamento de requisições.
+
+<h2 id="banco-de-dados">🗃 Banco de Dados</h2>
+
+Para configurar o banco de dados, você só precisa criar o banco de dados e rodar a aplicação. O Flyway cuidará do resto, aplicando todas as migrações necessárias para configurar e popular o banco de dados.
+
+### Criando o Banco de Dados
+
+Antes de iniciar a aplicação, crie o banco de dados com o seguinte comando SQL:
+
+```sql
+CREATE DATABASE `teste-dsin`;
+```
+OBS: Não esqueça do `` envolvendo o nome, use exatamente o exemplo acima, o mysql por padrão não aceita nome com "-".
+### Migrações do Flyway
+
+As migrações do Flyway são aplicadas automaticamente ao iniciar a aplicação. Aqui estão as descrições das migrações disponíveis:
+
+- **V1__Create_tables.sql**: Cria todas as tabelas necessárias para o sistema.
+- **V2__Populate_Beauty_Services.sql**: Popula o banco de dados com os serviços disponíveis no salão de beleza.
+- **V3__Create_Admin.sql**: Cria um usuário admin, já que o sistema requer que usuários com role de admin sejam criados manualmente.
+- **V4__Populate_data_to_be_possible_test_weekly_reports.sql**: Popula o banco com dados para possibilitar a visualização do relatório de desempenho semanal. O sistema não permite agendamentos em datas passadas, então esses dados já são incluídos para facilitar.
+
+Para mais detalhes sobre cada script de migração, acesse a pasta `src/resources/db/migration` no projeto.
 
 <h2 id="tecnologias">🛠 Tecnologias</h2>
 
@@ -45,7 +85,7 @@ spring:
     name: teste-dsin
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/teste-dsin 
+    url: jdbc:mysql://localhost:3306/teste-dsin #altere caso mude o nome do banco, ou o dominio e porta do banco sejam diferentes
     username: root  #altere para seu usuario
     password: root123 #altere para sua senha
   jpa:
@@ -69,38 +109,12 @@ cors:
 
 ### Iniciando
 
+Antes de iniciar de fato, confiram a seçao abaixo para garantir que o banco já tenha sido criado.
+
 ```bash
 cd /caminho/para/seu/projeto
 mvn spring-boot:run
 ```
-
-
-
-
-
-<h2 id="banco-de-dados">🗃 Banco de Dados</h2>
-
-Para configurar o banco de dados, você só precisa criar o banco de dados e rodar a aplicação. O Flyway cuidará do resto, aplicando todas as migrações necessárias para configurar e popular o banco de dados.
-
-### Criando o Banco de Dados
-
-Antes de iniciar a aplicação, crie o banco de dados com o seguinte comando SQL:
-
-```sql
-CREATE DATABASE `teste-dsin`;
-```
-OBS: Não esqueça do `` envolvendo o nome, use exatamente o exemplo acima, o mysql por padrão não aceita come com "-".
-### Migrações do Flyway
-
-As migrações do Flyway são aplicadas automaticamente ao iniciar a aplicação. Aqui estão as descrições das migrações disponíveis:
-
-- **V1_Create_tables.sql**: Cria todas as tabelas necessárias para o sistema.
-- **V2_Populate_Beauty_Services.sql**: Popula o banco de dados com os serviços disponíveis no salão de beleza.
-- **V3_Create_Admin.sql**: Cria um usuário admin, já que o sistema requer que usuários com role de admin sejam criados manualmente.
-- **V4_Populate_data_to_be_possible_test_weekly_reports.sql**: Popula o banco com dados para possibilitar a visualização do relatório de desempenho semanal. O sistema não permite agendamentos em datas passadas, então esses dados já são incluídos para facilitar.
-
-Para mais detalhes sobre cada script de migração, acesse a pasta `src/resources/db/migration` no projeto.
-
 
 <h2 id="endpoints">📍 Endpoints</h2>
 
