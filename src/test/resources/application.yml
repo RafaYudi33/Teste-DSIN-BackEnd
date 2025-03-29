@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: tste-dsin
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+
+server:
+  port: 8888
+security:
+  jwt:
+    secretKey: teste123
+    expirationInMillisecond: 1800000
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+
+cors:
+  originPatterns: "http://localhost:8000"

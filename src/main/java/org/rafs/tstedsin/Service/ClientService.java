@@ -42,7 +42,6 @@ public class ClientService {
         if(clientRepository.findByUsername(user.getUsername()) != null || adminRepository.findByUsername(user.getUsername()) != null) {
             throw new UserAlreadyExistsException();
         }
-        System.out.println(user.getRole());
         String passEncoded = passwordEncoder.encode(user.getPassword());
         user.setPassword(passEncoded);
         return clientRepository.save(user);

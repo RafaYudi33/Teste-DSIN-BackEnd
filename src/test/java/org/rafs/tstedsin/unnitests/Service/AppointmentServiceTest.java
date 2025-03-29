@@ -25,7 +25,7 @@ import org.rafs.tstedsin.Repository.AppointmentRepository;
 import org.rafs.tstedsin.Repository.BeautyServiceRepository;
 import org.rafs.tstedsin.Repository.ClientRepository;
 import org.rafs.tstedsin.Service.AppointmentService;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -87,7 +87,7 @@ public class AppointmentServiceTest {
     public void testCreateAppointmentSuccess() {
 
         when(clientRepository.findById(anyLong())).thenReturn(Optional.of(client));
-        when(appointmentMapper.toModel(any(), any(), any(), any())).thenReturn(appointment);
+        when(appointmentMapper.toModel(any(), any(), any())).thenReturn(appointment);
         when(appointmentRepository.save(any(Appointment.class))).thenReturn(appointment);
 
         Appointment createdAppointment = appointmentService.createAppointment(createAppointmentRequestDto);
@@ -105,8 +105,8 @@ public class AppointmentServiceTest {
         assertThrows(ClientNotFoundException.class, () -> {
             appointmentService.createAppointment(createAppointmentRequestDto);
         });
-
     }
+
     @Test
     public void testAdmUpdateAppointmentSuccess() {
 
@@ -126,7 +126,7 @@ public class AppointmentServiceTest {
     }
 
     @Test
-    public void testUpdateAppointment(){
+    public void testUpdateAppointmentSuccess(){
         Client client = new Client();
         client.setId(1L);
         Appointment appointmentToUpdate = new Appointment(client, List.of(beautyService), LocalDateTime.now().plusDays(3L));

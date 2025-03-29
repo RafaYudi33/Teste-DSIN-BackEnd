@@ -14,7 +14,6 @@ public class AppointmentMapper {
 
     public Appointment toModel(CreateAppointmentRequestDTO appointmentDto,
                                Client client,
-                               LocalDateTime dateTime,
                                List<BeautyService> beautyServices) {
         return new Appointment(client, beautyServices, appointmentDto.dateTime());
     }

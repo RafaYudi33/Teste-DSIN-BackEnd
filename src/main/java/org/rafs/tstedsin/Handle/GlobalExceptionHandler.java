@@ -32,7 +32,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ClientNotFoundException.class)
     public final CustomResponseError handleClientNotFoundException(ClientNotFoundException e, WebRequest request){
         return new CustomResponseError(e.getMessage(), LocalDateTime.now(), request.getDescription(false));
-
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

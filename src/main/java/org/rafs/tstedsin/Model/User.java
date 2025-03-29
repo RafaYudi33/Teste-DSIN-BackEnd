@@ -18,7 +18,7 @@ import java.util.List;
 @Table(name = "users")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "role", discriminatorType = DiscriminatorType.STRING)
-public class User implements UserDetails {
+public abstract class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,13 +41,13 @@ public class User implements UserDetails {
     @Column(insertable = false, updatable = false, nullable = false)
     private Role role;
 
-    public User(String password, String name) {
+    public User(String username, String password, String name) {
+        this.username = username;
         this.password = password;
         this.name = name;
     }
 
     public User() {
-        this.role = Role.ROLE_CLIENT;
     }
 
     @JsonIgnore

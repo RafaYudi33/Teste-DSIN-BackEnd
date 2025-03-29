@@ -47,7 +47,7 @@ public class AppointmentService {
         List<BeautyService> beautyServices = beautyServiceRepository.findAllById(appointmentDto.beautyServicesIds());
 
         return appointmentRepository.save(
-                appointmentMapper.toModel(appointmentDto, client, appointmentDto.dateTime(), beautyServices)
+                appointmentMapper.toModel(appointmentDto, client, beautyServices)
         );
     }
 

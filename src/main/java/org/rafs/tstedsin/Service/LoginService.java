@@ -14,8 +14,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 
 @Service
 public class LoginService {
@@ -40,14 +38,15 @@ public class LoginService {
 
             Authentication auth = this.authenticationManager.authenticate(userPassAuth);
 
-            String token = this.tokenService.generateToken((User)auth.getPrincipal());
+            User user = (User)auth.getPrincipal();
+            String token = this.tokenService.generateToken(user);
 
             String roleStr = auth.getAuthorities().stream()
                     .findFirst()
                     .map(GrantedAuthority::getAuthority)
                     .orElse("ROLE_USER");
 
-            User user = (User)auth.getPrincipal();
+
 
             return new LoginResponseDTO(
                     token,

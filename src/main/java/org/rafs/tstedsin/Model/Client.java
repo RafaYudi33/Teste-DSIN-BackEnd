@@ -7,13 +7,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import org.rafs.tstedsin.Enum.Role;
 
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@NoArgsConstructor
+
 @DiscriminatorValue("ROLE_CLIENT")
 @Entity
 public class Client extends User{
@@ -22,8 +22,13 @@ public class Client extends User{
     @JsonIgnore
     private List<Appointment> appointments;
 
-    public Client(String password, String name, List<Appointment> appointments) {
-        super(password, name);
+    public Client(){
+        this.setRole(Role.ROLE_CLIENT);
+    }
+
+    public Client(String username, String password, String name, List<Appointment> appointments) {
+        super(username, password, name);
+        this.setRole(Role.ROLE_CLIENT);
         this.appointments = appointments;
     }
 
