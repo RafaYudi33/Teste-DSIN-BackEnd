@@ -1,7 +1,7 @@
 package org.rafs.tstedsin.Model;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.*;
 import org.rafs.tstedsin.Enum.AppointmentStatus;

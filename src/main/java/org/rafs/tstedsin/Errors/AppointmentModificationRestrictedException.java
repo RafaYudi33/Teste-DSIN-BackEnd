@@ -2,6 +2,6 @@ package org.rafs.tstedsin.Errors;
 
 public class AppointmentModificationRestrictedException extends RuntimeException {
     public AppointmentModificationRestrictedException() {
-        super("Modificações só são permitidas em mais de 2 dias do agendamento");
+        super("Só é possivel editar agendamentos com pelo menos 2 dias de antecedência!");
     }
 }

@@ -8,6 +8,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public record UpdateAppointmentRequestDTO(@NotNull Long id, List<Long> beautyServicesIds,
-                                          @FutureOrPresent(message = "Não é permitido datas passadas") LocalDateTime dateTime,
+                                          @FutureOrPresent(message = "Não são permitidas datas passadas") LocalDateTime dateTime,
                                           @NotNull Long idClient) {
 }

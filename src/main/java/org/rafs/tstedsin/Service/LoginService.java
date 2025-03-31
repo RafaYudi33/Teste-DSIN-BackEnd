@@ -41,7 +41,7 @@ public class LoginService {
             User user = (User)auth.getPrincipal();
             String token = this.tokenService.generateToken(user);
 
-            String roleStr = auth.getAuthorities().stream()
+            String roleStr = user.getAuthorities().stream()
                     .findFirst()
                     .map(GrantedAuthority::getAuthority)
                     .orElse("ROLE_USER");

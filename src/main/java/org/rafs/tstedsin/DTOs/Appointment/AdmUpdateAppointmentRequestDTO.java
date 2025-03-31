@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public record AdmUpdateAppointmentRequestDTO(Long id, List<Long> beautyServicesIds,
-                                             @FutureOrPresent(message = "Não é permitido datas passadas")
+                                             @FutureOrPresent(message = "Não são permitidas datas passadas")
                                              LocalDateTime dateTime,
                                              AppointmentStatus status) {
 }

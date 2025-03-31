@@ -17,4 +17,5 @@ public class AppointmentMapper {
                                List<BeautyService> beautyServices) {
         return new Appointment(client, beautyServices, appointmentDto.dateTime());
     }
+
 }
